@@ -2,6 +2,8 @@
 
 A working backend for a social network where users can post thoughts, comment on other users' thoughts, and create friend lists.
 
+![A screenshot showing the User schema](/assets/screenshot.png)
+
 ## Features
 
 - Users, thoughts, reactions, and friend lists stored in noSQL database, with CRUD methods for interacting with them
