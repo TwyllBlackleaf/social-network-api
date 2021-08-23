@@ -1,4 +1,4 @@
-# Social Network Apii
+# Social Network API
 
 A working backend for a social network where users can post thoughts, comment on other users' thoughts, and create friend lists.
 
