@@ -15,7 +15,13 @@ const thoughtController = {
             { _id: params.id }
         )
             .select("-__v")
-            .then(thoughtData => res.json(thoughtData))
+            .then(thoughtData => {
+                if (!thoughtData) {
+                    res.status(404).json({ message: "No thought found with that ID." });
+                    return;
+                }
+                res.json(thoughtData)
+            })
             .catch(err => res.json(err));
     },
 
@@ -32,7 +38,8 @@ const thoughtController = {
             })
             .then(userData => {
                 if (!userData) {
-                    res.status(404).json({ message: "No user found with this ID." })
+                    res.status(404).json({ message: "No user found with this ID." });
+                    return;
                 }
                 res.json(userData);
             })
@@ -57,14 +64,48 @@ const thoughtController = {
     },
 
     // DELETE thought by _id
-    deleteThought({params}, res) {
+    deleteThought({ params }, res) {
         Thought.findOneAndDelete({ _id: params.thoughtId })
             .then(thoughtData => {
                 if (!thoughtData) {
-                    res.status(404).json({ message: "No thought found with this ID." })
+                    res.status(404).json({ message: "No thought found with this ID." });
+                    return;
                 }
                 res.json(thoughtData);
             })
             .catch(err => res.json(err));
+    },
+
+    // POST to create new reacton for a thought
+    createReaction({ params, body }, res) {
+        Thought.findOneAndUpdate(
+            { _id: params.thoughtId },
+            { $push: { reactions: body }},
+            { new: true, runValidators: true }
+        )
+            .then(thoughtData => {
+                if (!thoughtData) {
+                    res.status(404).json({ message: "No thought found with that ID." });
+                    return;
+                }
+                res.json(thoughtData);
+            })
+            .catch(err => res.json(err));
+    },
+
+    // DELETE reaction from a thought
+    deleteReaction({ params }, res) {
+        Thought.findOneAndUpdate(
+            { _id: params.thoughtId },
+            { $pull: { reactions: params.reactionId }},
+            { new: true }
+        )
+            .then(thoughtData => {
+                if (!thoughtData) {
+                    res.status(404).json({ message: "No thought found with this ID." });
+                    return;
+                }
+                res.json(thoughtData);
+            })
     }
 }
